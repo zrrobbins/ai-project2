@@ -6,25 +6,33 @@
  */
 //SearchMethod is True for Iterative and false for Greedy
 //Set to False by Defauls 
-Boolean searchMethod = new Boolean();
+public Boolean searchMethod = new Boolean();
 searchMethod = false;
+
+
+
+
 public class Main {
 	public static void main(String[] args){
 		// file reading + parsing
 		//	return a search object
+
+
+
 		/** File Parse
 		 * @param args the information from the command line
 		 * @return a search object parsed from the file 
 		 */
 
 		Search fileParse(String[] args){
-			FileInputStream stream = new FileInputStream();
+			FileInputStream fStream = new FileInputStream();
 			Operation() operations = new Operation();
 			double startValue = new double();
 			double targetValue = new double();
-			double timeValue = new double(); 
-			stream = stream.split("\n");
-			for( int i = 0, i < args.length(), i++){
+			double timeValue = new double();
+			String[] stream = new String[20]; 
+			stream = fStream.split("\n");
+			for( int i = 0, i < stream.length(), i++){
 				if (stream[i].contains("iterative")){
 					searchMethod = true;
 				}
@@ -41,8 +49,8 @@ public class Main {
 					operations[i] = stream[i];
 				}
 			}
-
-			
+			Search thisSearch = new Search(startValue, targetValue, timeValue, operations);
+			return thisSearch;
 		}
 		// choose a search method
 
