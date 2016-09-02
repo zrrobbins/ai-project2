@@ -1,5 +1,8 @@
-/*
- * Will put stuff here later like names and shiz
+/**
+ * Main.java
+ *
+ * CS4341: Project 1
+ * Group: Zachary Robbins, Kyle McCormick, Elijah Gonzalez, Peter Raspe
  */
 
 public class Main {
