@@ -4,8 +4,10 @@
  * CS4341: Project 1
  * Group: Zachary Robbins, Kyle McCormick, Elijah Gonzalez, Peter Raspe
  */
+//SearchMethod is True for Iterative and false for Greedy
+//Set to False by Defauls 
 Boolean searchMethod = new Boolean();
-
+searchMethod = false;
 public class Main {
 	public static void main(String[] args){
 		// file reading + parsing
@@ -17,9 +19,27 @@ public class Main {
 
 		Search fileParse(String[] args){
 			FileInputStream stream = new FileInputStream();
-			stream.split("\n");
+			Operation() operations = new Operation();
+			double startValue = new double();
+			double targetValue = new double();
+			double timeValue = new double(); 
+			stream = stream.split("\n");
 			for( int i = 0, i < args.length(), i++){
+				if (stream[i].contains("iterative")){
+					searchMethod = true;
+				}
+				else if( i <=4){
+					//parse the startvalue
+					startValue = Integer.parseInt(stream[2]);
+					//parse the targetvalue
+					targetValue = Integer.parseInt(stream[3]);
+					//parse the timevalue
+					timeValue = Integer.parseInt(stream[4]);
+				}
 
+				else if (stream[i].contrains(" ")){
+					operations[i] = stream[i];
+				}
 			}
 
 			
