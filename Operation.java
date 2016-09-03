@@ -6,8 +6,8 @@
  */
 
 public class Operation {
-	Operator type; // If root node, this should be null
-	double value;  // Value of node
+	Operator type;
+	double value;
 
 	public Operation(Operator type, double value) {
 		this.type = type;  

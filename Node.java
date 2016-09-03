@@ -6,12 +6,12 @@
  */
 
 public class Node {
-	Operator operator; 
+	Operation operation;
 	Node parent;	   // Parent node, NULL if this is root
 	Node[] children;   // Children, determined by operators list from parsing
 
-	public Node(Operator operator, Node parent, Node[] children) {
-		this.operator = operator;
+	public Node(Operation operation, Node parent, Node[] children) {
+		this.operation = operation;
 		this.parent = parent;
 		this.children = children;
 	}

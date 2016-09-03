@@ -5,6 +5,6 @@
  * Group: Zachary Robbins, Kyle McCormick, Elijah Gonzalez, Peter Raspe
  */
 
-public  enum Operator {
+public enum Operator {
 	ADD, SUBTRACT, MULTIPLY, DIVIDE, POWER
 } 

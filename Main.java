@@ -4,61 +4,92 @@
  * CS4341: Project 1
  * Group: Zachary Robbins, Kyle McCormick, Elijah Gonzalez, Peter Raspe
  */
-//SearchMethod is True for Iterative and false for Greedy
-//Set to False by Defauls 
-public Boolean searchMethod = new Boolean();
-searchMethod = false;
 
-
-
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 public class Main {
-	public static void main(String[] args){
-		// file reading + parsing
-		//	return a search object
 
+	/** parseFile
+	 * @param fpath the path to the configuration file
+	 * @return a search object parsed from the file or null if the file is malformed
+	 */
+ 	private static Search parseFile(String fpath) {
 
-
-		/** File Parse
-		 * @param args the information from the command line
-		 * @return a search object parsed from the file 
-		 */
-
-		Search fileParse(String[] args){
-			FileInputStream fStream = new FileInputStream();
-			Operation() operations = new Operation();
-			double startValue = new double();
-			double targetValue = new double();
-			double timeValue = new double();
-			String[] stream = new String[20]; 
-			stream = fStream.split("\n");
-			for( int i = 0, i < stream.length(), i++){
-				if (stream[i].contains("iterative")){
-					searchMethod = true;
-				}
-				else if( i <=4){
-					//parse the startvalue
-					startValue = Integer.parseInt(stream[2]);
-					//parse the targetvalue
-					targetValue = Integer.parseInt(stream[3]);
-					//parse the timevalue
-					timeValue = Integer.parseInt(stream[4]);
-				}
-
-				else if (stream[i].contrains(" ")){
-					operations[i] = stream[i];
-				}
-			}
-			Search thisSearch = new Search(startValue, targetValue, timeValue, operations);
-			return thisSearch;
+		String[] lines;
+		try {
+			List<String> linesList = Files.readAllLines(Paths.get(fpath), StandardCharsets.UTF_8);
+			lines = linesList.toArray(new String[linesList.size()]);
+		} catch (IOException e) {
+			System.err.println("failed to load file: " + e.getMessage());
+			return null;
 		}
-		// choose a search method
+		if (lines.length < 5) return null;
 
-		// give output in correct format 
-		// 	this probably should happen inside the performSearch method to a degree
+		boolean iterative;
+		if (lines[0].equals("iterative")) {
+			iterative = true;
+		} else if (lines[0].equals("greedy")) {
+			iterative = false;
+		} else {
+			System.err.println("expected iterative or greedy, got " + lines[0]);
+			return null;
+		}
 
-		// make two implementations of Search (greedy and iterative)
+		double startValue, targetValue, timeLimit;
+		try {
+			startValue = Double.parseDouble(lines[1]);
+			targetValue = Double.parseDouble(lines[2]);
+			timeLimit = Double.parseDouble(lines[3]);
+		} catch (NumberFormatException e) {
+			System.err.println("either start value, target value, or time limit was not a valid number");
+			return null;
+		}
 
-		// make tests
+		Operation[] ops = new Operation[lines.length - 4];
+		for (int i = 4; i < lines.length; i++) {
+			if (lines[i].length() == 0) continue;
+			char opChar = lines[i].charAt(0);
+			Operator op;
+			switch (opChar) {  
+			case '+': op = Operator.ADD; break;
+			case '-': op = Operator.SUBTRACT; break;
+			case '*': op = Operator.MULTIPLY; break;
+			case '/': op = Operator.DIVIDE; break;
+			case '^': op = Operator.POWER; break;
+			default: 
+				System.err.println("invalid operator: " + opChar);
+				return null;
+			}
+			String opNumString = lines[i].substring(2);
+			try {
+				ops[i - 4] = new Operation(op, Double.parseDouble(opNumString));
+			} catch (NumberFormatException e) {
+				System.err.println("failed to parse operation number: " + opNumString);
+				return null;
+			}
+		}
+
+		return iterative ?
+			new IterativeDeepeningSearch(startValue, targetValue, timeLimit, ops) :
+			new GreedySearch(startValue, targetValue, timeLimit, ops);
+	}
+
+	public static void main(String[] args) {
+		if (args.length < 1) {
+			System.err.println("error: expected one argument: path to configuration file");
+			return;
+		}
+
+		Search search = parseFile(args[0]);
+		if (search == null) {
+			System.err.println("error: configuration file either non-existent or incorrectly formatted");
+			return;
+		}
+
+		search.performSearch();
 	}
 }
