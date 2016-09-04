@@ -11,8 +11,9 @@ public class IterativeDeepeningSearch extends Search {
 		super(startValue,  targetValue, timeLimit, operations);
 	}
 
-	public Operation[] performSearch() {
+	@Override
+	public void performSearch() {
 		// TODO
-		return null;
+		System.out.println("unimplemented");
 	}
 }

@@ -19,5 +19,5 @@ public abstract class Search {
 		this.operations = operations;
 	}
 
-	public abstract Operation[] performSearch();
+	public abstract void performSearch();
 }
