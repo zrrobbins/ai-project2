@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.ArrayList;
 
 public class Main {
 
@@ -49,7 +50,7 @@ public class Main {
 			return null;
 		}
 
-		Operation[] ops = new Operation[lines.length - 4];
+		ArrayList<Operation> ops = new ArrayList<Operation>();
 		for (int i = 4; i < lines.length; i++) {
 			if (lines[i].length() == 0) continue;
 			char opChar = lines[i].charAt(0);
@@ -66,16 +67,17 @@ public class Main {
 			}
 			String opNumString = lines[i].substring(2);
 			try {
-				ops[i - 4] = new Operation(op, Double.parseDouble(opNumString));
+				ops.add(new Operation(op, Double.parseDouble(opNumString)));
 			} catch (NumberFormatException e) {
 				System.err.println("failed to parse operation number: " + opNumString);
 				return null;
 			}
 		}
+		Operation[] opsArray = ops.toArray(new Operation[ops.size()]);
 
 		return iterative ?
-			new IterativeDeepeningSearch(startValue, targetValue, timeLimit, ops) :
-			new GreedySearch(startValue, targetValue, timeLimit, ops);
+			new IterativeDeepeningSearch(startValue, targetValue, timeLimit, opsArray) :
+			new GreedySearch(startValue, targetValue, timeLimit, opsArray);
 	}
 
 	public static void main(String[] args) {

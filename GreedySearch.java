@@ -30,6 +30,7 @@ public class GreedySearch extends Search {
 			for (Node n : curr.children) {
 				queue.add(n);
 			}
+			if (queue.isEmpty()) break;
 			curr = queue.poll();
 		}
 
