@@ -6,13 +6,24 @@
  */
 
 public class Node {
-	Operation operation;
-	Node parent;	   // Parent node, NULL if this is root
-	Node[] children;   // Children, determined by operators list from parsing
 
-	public Node(Operation operation, Node parent, Node[] children) {
+	public final double value;
+	public final Operation operation; // NULL if this is root
+	public final Node parent;	      // Parent node, NULL if this is root
+	public Node[] children;           // Children, determined by operators list from parsing.
+	                                  //  NULL if not expanded
+
+	public Node(double value, Operation operation, Node parent) {
+		this.value = value;
 		this.operation = operation;
 		this.parent = parent;
-		this.children = children;
+		this.children = null;
+	}
+
+	public void expand(Operation[] operations) {
+		this.children = new Node[operations.length];
+		for (int i = 0; i < operations.length; i++) {
+			this.children[i] = new Node(operations[i].applyTo(this.value), operations[i], this);
+		}
 	}
 }
