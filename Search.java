@@ -7,12 +7,12 @@
 
 public abstract class Search {
 
-	double startValue;
-	double targetValue;
+	int startValue;
+	int targetValue;
 	double timeLimit;
 	Operation[] operations;
 
-	public Search(double startValue, double targetValue, double timeLimit, Operation[] operations) {
+	public Search(int startValue, int targetValue, double timeLimit, Operation[] operations) {
 		this.startValue = startValue;
 		this.targetValue = targetValue;
 		this.timeLimit = timeLimit;

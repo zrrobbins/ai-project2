@@ -7,20 +7,20 @@
 
 public class Operation {
 	public final Operator type;
-	public final double value;
+	public final int value;
 
-	public Operation(Operator type, double value) {
+	public Operation(Operator type, int value) {
 		this.type = type;  
 		this.value = value;
 	}
 
-	public double applyTo(double operand) {
+	public int applyTo(int operand) {
 		switch (this.type) {
 		case ADD: return operand + this.value;
 		case SUBTRACT: return operand - this.value;
 		case MULTIPLY: return operand * this.value;
 		case DIVIDE: return operand / this.value;
-		case POWER: return Math.pow(operand, this.value);
+		case POWER: return (int) Math.pow(operand, this.value);
 		}
 		throw new IllegalStateException("bad operator: " + this.type);
 	}

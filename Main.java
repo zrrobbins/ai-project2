@@ -40,10 +40,11 @@ public class Main {
 			return null;
 		}
 
-		double startValue, targetValue, timeLimit;
+		int startValue, targetValue;
+		double timeLimit;
 		try {
-			startValue = Double.parseDouble(lines[1]);
-			targetValue = Double.parseDouble(lines[2]);
+			startValue = Integer.parseInt(lines[1]);
+			targetValue = Integer.parseInt(lines[2]);
 			timeLimit = Double.parseDouble(lines[3]);
 		} catch (NumberFormatException e) {
 			System.err.println("either start value, target value, or time limit was not a valid number");
@@ -67,7 +68,7 @@ public class Main {
 			}
 			String opNumString = lines[i].substring(2);
 			try {
-				ops.add(new Operation(op, Double.parseDouble(opNumString)));
+				ops.add(new Operation(op, Integer.parseInt(opNumString)));
 			} catch (NumberFormatException e) {
 				System.err.println("failed to parse operation number: " + opNumString);
 				return null;

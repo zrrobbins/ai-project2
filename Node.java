@@ -7,13 +7,13 @@
 
 public class Node {
 
-	public final double value;
+	public final int value;
 	public final Operation operation; // NULL if this is root
 	public final Node parent;	      // Parent node, NULL if this is root
 	public Node[] children;           // Children, determined by operators list from parsing.
 	                                  //  NULL if not expanded
 
-	public Node(double value, Operation operation, Node parent) {
+	public Node(int value, Operation operation, Node parent) {
 		this.value = value;
 		this.operation = operation;
 		this.parent = parent;

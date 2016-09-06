@@ -7,7 +7,7 @@
 
 public class IterativeDeepeningSearch extends Search {
 
-	public IterativeDeepeningSearch(double startValue, double targetValue, double timeLimit, Operation[] operations) {
+	public IterativeDeepeningSearch(int startValue, int targetValue, double timeLimit, Operation[] operations) {
 		super(startValue,  targetValue, timeLimit, operations);
 	}
 

@@ -15,7 +15,7 @@ import java.util.Arrays;
  */
 public class GreedySearch extends Search {
 
-	public GreedySearch(double startValue, double targetValue, double timeLimit, Operation[] operations) {
+	public GreedySearch(int startValue, int targetValue, double timeLimit, Operation[] operations) {
 		super(startValue, targetValue, timeLimit, operations);
 	}
 
@@ -96,16 +96,16 @@ public class GreedySearch extends Search {
 	 */
 	private static class GreedySearchComparator implements Comparator<Node> {
 
-		public final double targetValue;
+		public final int targetValue;
 
-		public GreedySearchComparator(double targetValue) {
+		public GreedySearchComparator(int targetValue) {
 			this.targetValue = targetValue;
 		}
 
 		@Override
 		public int compare(Node a, Node b) {
-			double aDiff = Math.abs(a.value - this.targetValue);
-			double bDiff = Math.abs(b.value - this.targetValue);
+			int aDiff = Math.abs(a.value - this.targetValue);
+			int bDiff = Math.abs(b.value - this.targetValue);
 			return aDiff == bDiff ? 0  :
 			       aDiff <  bDiff ? -1 : 1;
 		}
