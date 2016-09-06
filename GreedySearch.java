@@ -27,7 +27,7 @@ public class GreedySearch extends Search {
 		long startTimeMillis = System.currentTimeMillis();
 		Node root = new Node(this.startValue, null, null);
 		Node curr = root;
-		int errorOccurred = 0; // Error flag, 1 == error occurred
+		int lastVal;
 		long elapsedTime;
 		int nodesExpanded = 0;
 		int maxSearchDepth = 0;
@@ -54,7 +54,8 @@ public class GreedySearch extends Search {
 		}
 
 		// Capture elapsed time
-		if ((elapsedTime = System.currentTimeMillis() - startTimeMillis) > timeLimit * 1000) errorOccurred = 1;
+		elapsedTime = System.currentTimeMillis() - startTimeMillis;
+		lastVal = curr.value;
 
 		// Output
 		Stack<String> steps = new Stack<String>();
@@ -70,7 +71,7 @@ public class GreedySearch extends Search {
 			System.out.println(steps.pop());
 		}		
 
-		System.out.println("Error: " + errorOccurred);
+		System.out.println("Error: " + (targetValue - lastVal));
 		System.out.println("Number of steps required: " + stepsRequired);
 		System.out.println("Search required: " + elapsedTime + " milliseconds");
 		System.out.println("Nodes expanded: " + nodesExpanded);
