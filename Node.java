@@ -10,6 +10,7 @@ public class Node {
 	public final int value;
 	public final Operation operation; // NULL if this is root
 	public final Node parent;	      // Parent node, NULL if this is root
+	public final int depth;
 	public Node[] children;           // Children, determined by operators list from parsing.
 	                                  //  NULL if not expanded
 
@@ -17,6 +18,7 @@ public class Node {
 		this.value = value;
 		this.operation = operation;
 		this.parent = parent;
+		this.depth = parent == null ? 0 : parent.depth + 1;
 		this.children = null;
 	}
 

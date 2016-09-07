@@ -43,14 +43,8 @@ public class GreedySearch extends Search {
 				queue.add(n);
 			}
 			if (queue.isEmpty()) break;
-
-			// TODO: Need a more efficient way to keep track of max search depth
-			// This will backtrace through parents up to the root node (i.e. the current path) and save the length every time
-			// a node is expanded other than one of the last node's children
-			if (!Arrays.asList(curr.children).contains(queue.peek()))
-				maxSearchDepth = updateDepth(maxSearchDepth, curr);
-
 			curr = queue.poll();
+			maxSearchDepth = Math.max(maxSearchDepth, curr.depth);
 		}
 
 		// Capture elapsed time
@@ -59,7 +53,6 @@ public class GreedySearch extends Search {
 
 		// Output
 		Stack<String> steps = new Stack<String>();
-		maxSearchDepth = updateDepth(maxSearchDepth, curr); // See if goal is deepest depth in search
 		int stepsRequired = 0;
 		while (curr != root) {
 			steps.push(curr.parent.value + " " + curr.operation + " = " + curr.value);
