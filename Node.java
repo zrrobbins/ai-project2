@@ -21,7 +21,10 @@ public class Node {
 		this.depth = parent == null ? 0 : parent.depth + 1;
 		this.children = null;
 	}
-
+	/**
+	 * Expands the given node of operation, giving it children
+	 * @param the node operations to be expanded into atree
+	 */
 	public void expand(Operation[] operations) {
 		this.children = new Node[operations.length];
 		for (int i = 0; i < operations.length; i++) {
@@ -31,6 +34,7 @@ public class Node {
 
 	/** 
 	 * Set node's references to its children to NULL, allowing them to be garbage collected
+	 * 
 	 */
 	public void collapse() {
 		for (int i = 0; i < children.length; i++) {

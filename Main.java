@@ -24,18 +24,22 @@ public class Main {
 		try {
 			List<String> linesList = Files.readAllLines(Paths.get(fpath), StandardCharsets.UTF_8);
 			lines = linesList.toArray(new String[linesList.size()]);
-		} catch (IOException e) {
+
+		} catch (IOException e) { // Catch failed file reading
 			System.err.println("failed to load file: " + e.getMessage());
 			return null;
 		}
+		//do not accept files without a minimum length of 5
 		if (lines.length < 5) return null;
 
 		boolean iterative;
-		if (lines[0].equals("iterative")) {
+
+		//check whether file should be solved with iterative or greedy search algorithm
+		if (lines[0].equals("iterative")) { //run iterative search
 			iterative = true;
-		} else if (lines[0].equals("greedy")) {
+		} else if (lines[0].equals("greedy")) { //run greedy search
 			iterative = false;
-		} else {
+		} else { //catch if there is not a specified algorithm
 			System.err.println("expected iterative or greedy, got " + lines[0]);
 			return null;
 		}
@@ -43,48 +47,51 @@ public class Main {
 		int startValue, targetValue;
 		double timeLimit;
 		try {
-			startValue = Integer.parseInt(lines[1]);
+			startValue = Integer.parseInt(lines[1]); // catch the startint targetvalue and timelimit from the friest few lines
 			targetValue = Integer.parseInt(lines[2]);
 			timeLimit = Double.parseDouble(lines[3]);
-		} catch (NumberFormatException e) {
-			System.err.println("either start value, target value, or time limit was not a valid number");
+		} catch (NumberFormatException e) { //catch issues with the initial numbers
+			System.err.println("either start value, target value, or time limit was not a valid number"); 
 			return null;
 		}
 
-		ArrayList<Operation> ops = new ArrayList<Operation>();
+		ArrayList<Operation> ops = new ArrayList<Operation>(); //make an arraylist for the given operations
 		for (int i = 4; i < lines.length; i++) {
 			if (lines[i].length() == 0) continue;
-			char opChar = lines[i].charAt(0);
+			char opChar = lines[i].charAt(0); //find the character at the start of the line
 			Operator op;
-			switch (opChar) {  
+			switch (opChar) {  //filter the character into the different operations
 			case '+': op = Operator.ADD; break;
 			case '-': op = Operator.SUBTRACT; break;
 			case '*': op = Operator.MULTIPLY; break;
 			case '/': op = Operator.DIVIDE; break;
 			case '^': op = Operator.POWER; break;
-			default: 
+			default:  //else not a proper operation
 				System.err.println("invalid operator: " + opChar);
 				return null;
 			}
-			String opNumString = lines[i].substring(2);
+
+			String opNumString = lines[i].substring(2); //cut to the number of each line
+
 			try {
-				ops.add(new Operation(op, Integer.parseInt(opNumString)));
-			} catch (NumberFormatException e) {
+				ops.add(new Operation(op, Integer.parseInt(opNumString))); //add the numbers to their respective operations
+			} catch (NumberFormatException e) { //catch number issues
 				System.err.println("failed to parse operation number: " + opNumString);
 				return null;
 			}
 		}
-		if (ops.size() == 0) {
+		if (ops.size() == 0) { //must have at least one operation to be solved
 			System.err.println("must specify at least one operation");
 			return null;
 		}
-		Operation[] opsArray = ops.toArray(new Operation[ops.size()]);
+		Operation[] opsArray = ops.toArray(new Operation[ops.size()]); //create the array of operations from what has been parsed
 
-		return iterative ?
+		return iterative ? //run the respective search algorithm
 			new IterativeDeepeningSearch(startValue, targetValue, timeLimit, opsArray) :
 			new GreedySearch(startValue, targetValue, timeLimit, opsArray);
 	}
 
+	//Check the command line for the command to be run and make sure it is run properly
 	public static void main(String[] args) {
 		if (args.length < 1) {
 			System.err.println("error: expected one argument: path to configuration file");
@@ -96,7 +103,7 @@ public class Main {
 			System.err.println("error: configuration file either non-existent or incorrectly formatted");
 			return;
 		}
-
+		//begin running the search
 		search.performSearch();
 	}
 }
