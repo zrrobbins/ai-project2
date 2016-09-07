@@ -28,4 +28,14 @@ public class Node {
 			this.children[i] = new Node(operations[i].applyTo(this.value), operations[i], this);
 		}
 	}
+
+	/** 
+	 * Set node's references to its children to NULL, allowing them to be garbage collected
+	 */
+	public void collapse() {
+		for (int i = 0; i < children.length; i++) {
+			this.children[i] = null;
+		}
+		this.children = null;
+	}
 }

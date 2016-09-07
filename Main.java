@@ -74,6 +74,10 @@ public class Main {
 				return null;
 			}
 		}
+		if (ops.size() == 0) {
+			System.err.println("must specify at least one operation");
+			return null;
+		}
 		Operation[] opsArray = ops.toArray(new Operation[ops.size()]);
 
 		return iterative ?

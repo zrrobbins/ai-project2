@@ -16,71 +16,46 @@ public class IterativeDeepeningSearch extends Search {
 	@Override
 	public void performSearch() {
 		long startTimeMillis = System.currentTimeMillis();
-		int maxDepth = 1;
-		boolean isDone = false;
-		while(!isDone && System.currentTimeMillis() - startTimeMillis < timeLimit * 1000){
-			isDone = depthLimitedSearch(maxDepth, startValue, targetValue, timeLimit, operations, startTimeMillis);
+		int maxDepth = 0;
+		Node closestNode = null;
+		while ((closestNode == null || closestNode.value != this.targetValue) && System.currentTimeMillis() - startTimeMillis < timeLimit * 1000) {
 			maxDepth++;
+			closestNode = depthLimitedSearch(maxDepth, new Node(startValue, null, null), startTimeMillis);
 		}
+
+		Stack<String> path = new Stack<String>();
+		Node currentNode = closestNode;
+		while (currentNode.parent != null) {
+			path.push(currentNode.parent.value + " " + currentNode.operation + " = " + currentNode.value);
+			currentNode = currentNode.parent;
+		}
+		while (!path.empty()) {
+			System.out.println(path.pop());
+		}	
 	}
 
-	//A depth limited search that will search until it reaches the maximum depth for all branches
-	private boolean depthLimitedSearch(int maxDepth, int startValue, int targetValue, double timeLimit, Operation[] operations, long startTime ){
-		Node startNode = new Node(startValue, null, null);
-		Node currentNode = startNode;
-		int localDepth = 0;
+	private Node depthLimitedSearch(int maxDepth, Node node, long startTimeMillis) {
+		boolean done = (
+			node.value == this.targetValue || 
+			node.depth >= maxDepth || 
+			System.currentTimeMillis() - startTimeMillis >= timeLimit * 1000
+		);
+		if (done) return node;
 
-		//Metrics initialization
-
-		//The frontier is the the stack for nodes to explore
-		Stack<Node> frontier = new Stack<Node>();
-
-		frontier.push(startNode);
-
-		//Runs a while loop until the frontier is exhausted
-		while(!frontier.isEmpty() && (System.currentTimeMillis() - startTime < timeLimit * 1000) ){
-			//If we reach the target node, then we print out the path from the start node to the target
-			if(currentNode.value == targetValue){
-				System.out.println("We're done!");
-				Stack<String> path = new Stack<String>();
-
-				while (currentNode != startNode) {
-				path.push(currentNode.parent.value + " " + currentNode.operation + " = " + currentNode.value);
-				currentNode = currentNode.parent;
-				}
-
-				while (!path.empty()) {
-				System.out.println(path.pop());
-				}	
-
-				return true;
-			}
-			//This function checks how deep the current node is. If it is deeper than the max depth then we simply dont expand any further and pop the next node off the frontier
-			int currentDepth = countPathDepth(currentNode, startNode);
-			if(currentDepth <= maxDepth){
-				currentNode.expand(operations);
-				for(Node node: currentNode.children){
-					frontier.push(node);
-				}
-				currentNode = frontier.pop();
-			}
-			else{
-				currentNode = frontier.pop();
+		node.expand(this.operations);
+		Node closestNode = null;
+		int closestNodeDiff = Integer.MAX_VALUE;
+		for (Node child : node.children) {
+			Node c = depthLimitedSearch(maxDepth, child, startTimeMillis);
+			int cDiff = Math.abs(c.value - this.targetValue);
+			if (cDiff < closestNodeDiff) {
+				closestNode = c;
+				closestNodeDiff = cDiff;
 			}
 		}
-		return false;
-	}
+		node.collapse();
 
-	//Returns the depth of the current node
-	private int countPathDepth(Node thisNode, Node start){
-		int pathDepth = 0;
-		while (thisNode != start) {
-			pathDepth++;
-			thisNode = thisNode.parent;
-		}
-		return pathDepth;
+		return closestNodeDiff < Math.abs(node.value - this.targetValue) ? closestNode : node;
 	}
-
 }
-
 	

@@ -64,6 +64,7 @@ public class GreedySearch extends Search {
 			System.out.println(steps.pop());
 		}		
 
+		System.out.println();
 		System.out.println("Error: " + (targetValue - lastVal));
 		System.out.println("Number of steps required: " + stepsRequired);
 		System.out.println("Search required: " + elapsedTime + " milliseconds");
