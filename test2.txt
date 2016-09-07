@@ -1,4 +1,4 @@
-greedy
+iterative
 0
 66668787
 5.0
