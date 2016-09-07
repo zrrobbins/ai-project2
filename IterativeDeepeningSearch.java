@@ -15,16 +15,17 @@ public class IterativeDeepeningSearch extends Search {
 
 	@Override
 	public void performSearch() {
+		long startTimeMillis = System.currentTimeMillis();
 		int maxDepth = 1;
 		boolean isDone = false;
-		while(!isDone){
-			isDone = depthLimitedSearch(maxDepth, startValue, targetValue, timeLimit, operations);
+		while(!isDone && System.currentTimeMillis() - startTimeMillis < timeLimit * 1000){
+			isDone = depthLimitedSearch(maxDepth, startValue, targetValue, timeLimit, operations, startTimeMillis);
 			maxDepth++;
 		}
 	}
 
 	//A depth limited search that will search until it reaches the maximum depth for all branches
-	private boolean depthLimitedSearch(int maxDepth, int startValue, int targetValue, double timeLimit, Operation[] operations ){
+	private boolean depthLimitedSearch(int maxDepth, int startValue, int targetValue, double timeLimit, Operation[] operations, long startTime ){
 		Node startNode = new Node(startValue, null, null);
 		Node currentNode = startNode;
 		int localDepth = 0;
@@ -37,7 +38,7 @@ public class IterativeDeepeningSearch extends Search {
 		frontier.push(startNode);
 
 		//Runs a while loop until the frontier is exhausted
-		while(!frontier.isEmpty()){
+		while(!frontier.isEmpty() && (System.currentTimeMillis() - startTime < timeLimit * 1000) ){
 			//If we reach the target node, then we print out the path from the start node to the target
 			if(currentNode.value == targetValue){
 				System.out.println("We're done!");
