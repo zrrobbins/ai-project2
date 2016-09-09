@@ -58,6 +58,16 @@ You may refer to the included tests as reference for formatting.
 - ITERATIVE: Runs out of time and exits, nowhere near finding a solution. Number of nodes expanded is extremely high.
 
 ### Analysis
+
+The formula we used to calculate effective branching factor is: **EFB = n^(1/d)**, where n = number of nodes expanded and d = max search depth.
+|          |Greedy	   	|Iterative  |
+|----------|------------|-----------|
+|**Test 1**|1.348006155	|2.220906155|
+|**Test 2**|1.000058651	|3.476818052|
+|**Test 3**|1.379729661	|3.361975407|
+|**Test 4**|0	        |0          |
+|**Test 5**|1.006931669	|3.958028323|
+
 The average effective branching factor was 1.18 for Greedy Search and 3.26 for Iterative Deepening Search. The branching factor is higher for IDS because it expands all nodes up to the maximum depth, whereas Greedy Search only expands the nodes with the lowest heuristic value.
 
 In general, the number of steps taken and nodes expanded by Greedy Search was lower than those expanded in IDS. However, in certain examples, such as Example 3, IDS was more successful in finding the true optimal solution, and Greedy Search finds a quick but inefficient solution. Based on these results, it would be more optimal to use Greedy Search when you have harder memory and time constraints, and use IDS otherwise.
