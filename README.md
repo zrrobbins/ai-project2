@@ -57,9 +57,7 @@ You may refer to the included tests as reference for formatting.
 - GREEDY: Finds the optimal solution of 1000 steps, with 1000 nodes expanded, and a maximum search depth of 1000.
 - ITERATIVE: Runs out of time and exits, nowhere near finding a solution. Number of nodes expanded is extremely high.
 
-
 ### Analysis
 The average effective branching factor was 1.18 for Greedy Search and 3.26 for Iterative Deepening Search. The branching factor is higher for IDS because it expands all nodes up to the maximum depth, whereas Greedy Search only expands the nodes with the lowest heuristic value.
 
 In general, the number of steps taken and nodes expanded by Greedy Search was lower than those expanded in IDS. However, in certain examples, such as Example 3, IDS was more successful in finding the true optimal solution, and Greedy Search finds a quick but inefficient solution. Based on these results, it would be more optimal to use Greedy Search when you have harder memory and time constraints, and use IDS otherwise.
-
