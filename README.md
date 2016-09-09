@@ -59,17 +59,19 @@ You may refer to the included tests as reference for formatting.
 
 
 ### Effective Branching Factor
+|Greedy	    	|Iterative  |
+|---------------|-----------|
+|1.348006155	|2.220906155|
+|1.000058651	|3.476818052|
+|1.379729661	|3.361975407|
+|0	        	|0          |
+|1.006931669	|3.958028323|
+|---------------|-----------|
 
-effective branching factor	
-greedy	    iterative
-1.348006155	2.220906155
-1.000058651	3.476818052
-1.379729661	3.361975407
-0	        0
-1.006931669	3.958028323
-Average
-1.1835      3.2563
+|Greedy Average |Iterative Average|
+|---------------|-----------------|
+|1.1835         |           3.2563|
 
-### Comculsion
-In general, the number of steps taken and branches expanded by greedy search was far lower than their respective iterative counterparts. However, in certain examples, such as example 3, iterative was more successful in finding the true optimal solution, and greedy finds a quick but inefficient solution. Based on these results, it would be more optimal to use greedy search when you have severe memory and time constraints, and when memory isn’t a concern but optimality is, use the iterative search.
+### Conculsion
+In general, the number of steps taken and branches expanded by greedy search was far lower than their respective iterative counterparts. However, in certain examples, such as example 3, iterative was more successful in finding the true optimal solution, and greedy finds a quick but inefficient solution. Based on these results, it would be more optimal to use greedy search when you have severe memory and time constraints, and when memory and time isn’t a concern but optimality is, use the iterative deepening search.
 
