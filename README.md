@@ -56,3 +56,16 @@ You may refer to the included tests as reference for formatting.
 - *Description:* With a very high branching factor and minimum solution depth of 1000, greedy is able to find a solution, while iterative runs out of time.
 - GREEDY: Finds the optimal solution of 1000 steps, with 1000 nodes expanded, and a maximum search depth of 1000.
 - ITERATIVE: Runs out of time and exits, nowhere near finding a solution. Number of nodes expanded is extremely high.
+
+
+### Effective Branching Factor
+
+effective branching factor	
+greedy	    iterative
+1.348006155	2.220906155
+1.000058651	3.476818052
+1.379729661	3.361975407
+0	        0
+1.006931669	3.958028323
+
+Pete or Eli compare stuffz
