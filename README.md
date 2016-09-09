@@ -60,7 +60,8 @@ You may refer to the included tests as reference for formatting.
 ### Analysis
 
 The formula we used to calculate effective branching factor is: **EFB = n^(1/d)**, where n = number of nodes expanded and d = max search depth.
-|          |Greedy	   	|Iterative  |
+
+||Greedy|Iterative  |
 |----------|------------|-----------|
 |**Test 1**|1.348006155	|2.220906155|
 |**Test 2**|1.000058651	|3.476818052|
