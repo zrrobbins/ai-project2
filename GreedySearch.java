@@ -38,7 +38,7 @@ public class GreedySearch extends Search {
 			System.currentTimeMillis() - startTimeMillis < timeLimit * 1000
 		) {
 			curr.expand(this.operations);
-			nodesExpanded += this.operations.length;
+			nodesExpanded++;
 			for (Node n : curr.children) {
 				queue.add(n);
 			}
