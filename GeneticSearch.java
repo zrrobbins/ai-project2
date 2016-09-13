@@ -38,7 +38,42 @@ public class GeneticSearch extends Search {
 	 */
 
 	private List<Operation> generateNewOrganism() {
-		return null; // TODO
+		Random rand = new Random();
+		int len = rand.nextInt(26) + 5;
+		List<Operation> result = new LinkedList<Operation>();
+		double val = this.startValue;
+		for (int i = 0; i < len; i++) {
+			boolean useGreedy = rand.nextInt(2) == 0;
+			Operation toAdd = null;
+			if (useGreedy) {
+				double bestVal = Double.MAX_VALUE;
+				for (Operation op : this.operations) {
+					double v = op.applyTo(val);
+					if (toAdd == null || Math.abs(v - this.targetValue) < Math.abs(bestVal - this.targetValue)) {
+						bestVal = v;
+						toAdd = op;
+					}
+				}
+			} else {
+				toAdd = this.operations[rand.nextInt(this.operations.length)];
+			}
+			result.add(toAdd);
+			val = toAdd.applyTo(val);
+		}
+		return result;
+	}
+
+	private void debugPrintOrganism(List<Operation> organism) {
+		System.out.print("[");
+		boolean firstIter = true;
+		for (Operation op : organism) {
+			if (!firstIter) {
+				System.out.print(", ");
+			}
+			System.out.print(op + "");
+			firstIter = false;
+		}
+		System.out.println("]");
 	}
 
 	private List<Operation> reproduce(List<Operation> mother, List<Operation> father) {
@@ -58,7 +93,9 @@ public class GeneticSearch extends Search {
 			64, new OrganismComparator(this.startValue, this.targetValue)
 		);
 		for (int i = 0; i < INIT_POPULATION_SIZE; i++) {
-			population.add(this.generateNewOrganism());
+			List<Operation> organism = this.generateNewOrganism();
+			debugPrintOrganism(organism);
+			population.add(organism);
 		}
 		// TODO: finish
 	}
