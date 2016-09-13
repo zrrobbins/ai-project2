@@ -1,5 +1,5 @@
 # ai-project1
-Project 1 for CS4341 (AI)
+Project 2 for CS4341 (AI)
 
 ### Description
 This project contains implementations of both Greedy (Best-First) and Iterative Deepening Searches, for Assignment 1 of CS4341. Group: Zachary Robbins, Kyle McCormick, Elijah Gonzalez, Peter Raspé.

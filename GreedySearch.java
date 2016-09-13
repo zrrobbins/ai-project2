@@ -1,7 +1,7 @@
 /**
  * GreedySearch.java
  *
- * CS4341: Project 1
+ * CS4341: Project 2
  * Group: Zachary Robbins, Kyle McCormick, Elijah Gonzalez, Peter Raspe
  */
 
@@ -15,7 +15,7 @@ import java.util.Arrays;
  */
 public class GreedySearch extends Search {
 
-	public GreedySearch(int startValue, int targetValue, double timeLimit, Operation[] operations) {
+	public GreedySearch(double startValue, double targetValue, double timeLimit, Operation[] operations) {
 		super(startValue, targetValue, timeLimit, operations);
 	}
 
@@ -27,7 +27,7 @@ public class GreedySearch extends Search {
 		long startTimeMillis = System.currentTimeMillis();
 		Node root = new Node(this.startValue, null, null);
 		Node curr = root;
-		int lastVal;
+		double lastVal;
 		long elapsedTime;
 		int nodesExpanded = 0;
 		int maxSearchDepth = 0;
@@ -91,16 +91,16 @@ public class GreedySearch extends Search {
 	 */
 	private static class GreedySearchComparator implements Comparator<Node> {
 
-		public final int targetValue;
+		public final double targetValue;
 
-		public GreedySearchComparator(int targetValue) {
+		public GreedySearchComparator(double targetValue) {
 			this.targetValue = targetValue;
 		}
 
 		@Override
 		public int compare(Node a, Node b) {
-			int aDiff = Math.abs(a.value - this.targetValue);
-			int bDiff = Math.abs(b.value - this.targetValue);
+			double aDiff = Math.abs(a.value - this.targetValue);
+			double bDiff = Math.abs(b.value - this.targetValue);
 			return aDiff == bDiff ? 0  :
 			       aDiff <  bDiff ? -1 : 1;
 		}

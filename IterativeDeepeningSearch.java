@@ -1,7 +1,7 @@
 /**
  * IterativeDeepeningSearch.java
  *
- * CS4341: Project 1
+ * CS4341: Project 2
  * Group: Zachary Robbins, Kyle McCormick, Elijah Gonzalez, Peter Raspe
  */
 import java.util.Stack;
@@ -14,7 +14,7 @@ public class IterativeDeepeningSearch extends Search {
 
 	int nodesExpanded = 0;
 
-	public IterativeDeepeningSearch(int startValue, int targetValue, double timeLimit, Operation[] operations) {
+	public IterativeDeepeningSearch(double startValue, double targetValue, double timeLimit, Operation[] operations) {
 		super(startValue,  targetValue, timeLimit, operations);
 	}
 
@@ -70,10 +70,10 @@ public class IterativeDeepeningSearch extends Search {
 		node.expand(this.operations);
 		nodesExpanded++;
 		Node closestNode = null;
-		int closestNodeDiff = Integer.MAX_VALUE;
+		double closestNodeDiff = Double.MAX_VALUE;
 		for (Node child : node.children) {
 			Node c = depthLimitedSearch(maxDepth, child, startTimeMillis);
-			int cDiff = Math.abs(c.value - this.targetValue);
+			double cDiff = Math.abs(c.value - this.targetValue);
 			// Keep track of node closest to goal
 			if (cDiff < closestNodeDiff) {
 				closestNode = c;

@@ -1,7 +1,7 @@
 /**
  * Main.java
  *
- * CS4341: Project 1
+ * CS4341: Project 2
  * Group: Zachary Robbins, Kyle McCormick, Elijah Gonzalez, Peter Raspe
  */
 
@@ -44,11 +44,11 @@ public class Main {
 			return null;
 		}
 
-		int startValue, targetValue;
+		double startValue, targetValue;
 		double timeLimit;
 		try {
-			startValue = Integer.parseInt(lines[1]); // catch the startint targetvalue and timelimit from the friest few lines
-			targetValue = Integer.parseInt(lines[2]);
+			startValue = Double.parseDouble(lines[1]); // catch the startint targetvalue and timelimit from the friest few lines
+			targetValue = Double.parseDouble(lines[2]);
 			timeLimit = Double.parseDouble(lines[3]);
 		} catch (NumberFormatException e) { //catch issues with the initial numbers
 			System.err.println("either start value, target value, or time limit was not a valid number"); 
@@ -74,7 +74,7 @@ public class Main {
 			String opNumString = lines[i].substring(2); //cut to the number of each line
 
 			try {
-				ops.add(new Operation(op, Integer.parseInt(opNumString))); //add the numbers to their respective operations
+				ops.add(new Operation(op, Double.parseDouble(opNumString))); //add the numbers to their respective operations
 			} catch (NumberFormatException e) { //catch number issues
 				System.err.println("failed to parse operation number: " + opNumString);
 				return null;

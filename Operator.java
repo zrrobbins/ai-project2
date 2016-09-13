@@ -1,7 +1,7 @@
 /**
  * Operator.java
  *
- * CS4341: Project 1
+ * CS4341: Project 2
  * Group: Zachary Robbins, Kyle McCormick, Elijah Gonzalez, Peter Raspe
  */
 
