@@ -32,15 +32,21 @@ public class Main {
 		//do not accept files without a minimum length of 5
 		if (lines.length < 5) return null;
 
-		boolean iterative;
+		// 0 = iterative
+		// 1 = greedy
+		// 2 = genetic
+		int searchType;
+
 
 		//check whether file should be solved with iterative or greedy search algorithm
 		if (lines[0].equals("iterative")) { //run iterative search
-			iterative = true;
+			searchType = 0;
 		} else if (lines[0].equals("greedy")) { //run greedy search
-			iterative = false;
+			searchType = 1;
+		} else if (lines[0].equals("genetic")) { //run greedy search
+			searchType = 2;
 		} else { //catch if there is not a specified algorithm
-			System.err.println("expected iterative or greedy, got " + lines[0]);
+			System.err.println("expected iterative, greedy, or genetic, got " + lines[0]);
 			return null;
 		}
 
@@ -86,9 +92,17 @@ public class Main {
 		}
 		Operation[] opsArray = ops.toArray(new Operation[ops.size()]); //create the array of operations from what has been parsed
 
-		return iterative ? //run the respective search algorithm
-			new IterativeDeepeningSearch(startValue, targetValue, timeLimit, opsArray) :
-			new GreedySearch(startValue, targetValue, timeLimit, opsArray);
+		// Return respective search type
+		switch(searchType) {
+			case 0:
+				return new IterativeDeepeningSearch(startValue, targetValue, timeLimit, opsArray);
+			case 1:
+				return new GreedySearch(startValue, targetValue, timeLimit, opsArray);
+			case 2:
+				return new GeneticSearch(startValue, targetValue, timeLimit, opsArray);
+			default:
+				throw new IllegalStateException("Invalid search type!");
+		}
 	}
 
 	//Check the command line for the command to be run and make sure it is run properly

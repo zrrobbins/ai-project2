@@ -41,6 +41,7 @@ public class GeneticSearch extends Search {
 	 */
 	@Override
 	public void performSearch() {
+		System.out.println("LOL");
 
 	}
 
