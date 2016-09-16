@@ -18,6 +18,6 @@ public abstract class Search {
 		this.timeLimit = timeLimit;
 		this.operations = operations;
 	}
-
+	
 	public abstract void performSearch();
 }

@@ -25,6 +25,7 @@ public class Operation {
 		throw new IllegalStateException("bad operator: " + this.type);
 	}
 
+	
 	@Override
 	public String toString() {
 		return this.type + " " + this.value;

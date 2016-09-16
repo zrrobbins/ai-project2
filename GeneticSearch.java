@@ -184,8 +184,38 @@ public class GeneticSearch extends Search {
 		}
 	}
 
-	private void mutate(List<Operation> organism) {
-		// TODO
+	/**
+	 * Mutates through the list of operations that is an organism
+	 * @param operations the list to iterate through and mutate
+	 * 
+	 */
+	public void mutate(List<Operation> organism) {
+		Random rand = new Random();
+		int k = rand.nextInt(1000);
+		int j = rand.nextInt(organism.size());
+		if (k > 950) {
+			organism.remove(j);
+		} else if (k > 900) {
+			addOperation(organism, j);
+		} else if (k > 850) {
+			randomizeOperation(organism, j);
+		}
+	}
+
+	/**
+	 * Randomizes the given operator
+	 * @param operation the operation to be randomized
+	 */
+	public void randomizeOperation(List<Operation> organism, int index) {
+		Random rand = new Random();
+		int i = rand.nextInt(this.operations.length);
+		organism.set(index, this.operations[i]);
+	}
+
+	public void addOperation(List<Operation> organism, int index) {
+		Random rand = new Random();
+		int i = rand.nextInt(this.operations.length);
+		organism.add(index, this.operations[i]);
 	}
 
 	/**
@@ -214,8 +244,25 @@ public class GeneticSearch extends Search {
 		testReproduce(population.poll(), population.poll());
 
 		// TODO: finish
+
 	}
 
+	/**
+	 * Tests Mutation functions
+	 */
+	public void testMutators(){
+		PriorityQueue<List<Operation>> population = new PriorityQueue<List<Operation>>(
+			64, new OrganismComparator(this.startValue, this.targetValue)
+		);
+		for (int i = 0; i < INIT_POPULATION_SIZE; i++) {
+			List<Operation> organism = this.generateNewOrganism();
+			debugPrintOrganism(organism);
+			population.add(organism);
+			mutate(organism);
+			debugPrintOrganism(organism);
+		}
+
+	}
 	private static class OrganismComparator implements Comparator<List<Operation>> {
 		
 		public final double targetValue, startValue;
