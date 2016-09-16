@@ -80,8 +80,43 @@ public class GeneticSearch extends Search {
 		return null; // TODO
 	}
 
-	private void mutate(List<Operation> organism) {
-		// TODO
+	/**
+	 * Mutates through the list of operations that is an organism
+	 * @param operations the list to iterate through and mutate
+	 * 
+	 */
+	public void Mutate(List<Operation> operations){
+		Random rand = new Random()
+		int j = 0;
+		int k = rand.nextInt(1000);
+		int n = rand.nextInt(operations.size());
+		if (k > 950){
+			for(int i =0, i < n, i++){
+				j = rand.nextInt(operations.size());
+				d = rand.nextInt(50);
+				if (d >= 48){
+					operations.remove(j)
+				}
+				Randomize(operation[j]);
+			}
+		}
+	}
+
+
+	/**
+	 * Randomizes the given operator
+	 * @param operation the operation to be randomized
+	 */
+	public void Randomize(Operation operation){
+
+		operation.value = rand.nextint(operation.value); 
+		switch(operation.type){
+			case 1: return ADD;
+			case 2: return SUBTRACT;
+			case 3: return MULTIPLY;
+			case 4: return DIVIDE;
+			case 5: return POWER;
+		}
 	}
 
 	/**
