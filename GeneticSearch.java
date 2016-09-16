@@ -98,13 +98,9 @@ public class GeneticSearch extends Search {
 					break;
 				}
 
-				//Runs a for loop currentProbNumerator number of times, where each time there is a 1/probDenominator chance of being seleted
-				for(int i = 0; i<currentProbNumerator;i++){
-					int value = randomizer.nextInt(probDenominator);
-					if(value == 1){
-						parentList.add(organism);
-						break;
-					}
+				double prob = currentProbNumerator / (double) probDenominator / 2;
+				if (randomizer.nextDouble() < prob) {
+					parentList.add(organism);
 				}
 
 				//Make sure that the probability numerator never equals 0
@@ -118,7 +114,7 @@ public class GeneticSearch extends Search {
 		int parent2Index = 0;
 		List<ParentPair> pairList = new ArrayList<ParentPair>();//List of pairs
 		//While the parentList has two or more organisms in it randomly pair up two organism and add them to the pairList
-		while(parentList.size() > 1){
+		while(parentList.size() > 2) {
 			parent1Index = randomizer.nextInt(parentList.size() - 1);
 			List<Operation> organism1 = parentList.get(parent1Index);
 			parentList.remove(parent1Index);
@@ -162,7 +158,7 @@ public class GeneticSearch extends Search {
 
 	private static class OrganismComparator implements Comparator<List<Operation>> {
 		
-		public final double it, targetValue, startValue;
+		public final double targetValue, startValue;
 
 		public OrganismComparator(double startValue, double targetValue) {
 			this.startValue = startValue;
