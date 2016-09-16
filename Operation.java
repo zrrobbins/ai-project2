@@ -24,11 +24,8 @@ public class Operation {
 		}
 		throw new IllegalStateException("bad operator: " + this.type);
 	}
-	private void randomize(Operator type, double value){
-		Random rand = new Random();
-		int q =rand.nextInt(/*operations list size + 1 for delete the operation*/);
 
-	}
+	
 	@Override
 	public String toString() {
 		return this.type + " " + this.value;

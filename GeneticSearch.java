@@ -85,19 +85,23 @@ public class GeneticSearch extends Search {
 	 * @param operations the list to iterate through and mutate
 	 * 
 	 */
-	public void Mutate(List<Operation> operations){
-		Random rand = new Random()
+	public void Mutate(List<Operation> operations, Operation[] population){
+		Random rand = new Random();
 		int j = 0;
+		int d = 0;
 		int k = rand.nextInt(1000);
 		int n = rand.nextInt(operations.size());
 		if (k > 950){
-			for(int i =0, i < n, i++){
+			for(int i =0; i < n; i++){
 				j = rand.nextInt(operations.size());
 				d = rand.nextInt(50);
 				if (d >= 48){
-					operations.remove(j)
+					operations.remove(j);
 				}
-				Randomize(operation[j]);
+				if (d <= 2){
+					addOperation(operations, j, population);
+				}
+				RandomizeOperation(operations, j, population);
 			}
 		}
 	}
@@ -107,16 +111,17 @@ public class GeneticSearch extends Search {
 	 * Randomizes the given operator
 	 * @param operation the operation to be randomized
 	 */
-	public void Randomize(Operation operation){
+	public void RandomizeOperation(List<Operation> operations, int index, Operation[] population){
+		Random rand = new Random();
+		int i = rand.nextInt(population.length);
+		operations.set(index, population[i]);
+	}
 
-		operation.value = rand.nextint(operation.value); 
-		switch(operation.type){
-			case 1: return ADD;
-			case 2: return SUBTRACT;
-			case 3: return MULTIPLY;
-			case 4: return DIVIDE;
-			case 5: return POWER;
-		}
+	public void addOperation(List<Operation> operations, int index, Operation[] population){
+		Random rand = new Random();
+		int i = rand.nextInt(population.length);
+		operations.add(index, population[i]);
+
 	}
 
 	/**
