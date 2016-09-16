@@ -119,7 +119,7 @@ public class GeneticSearch extends Search {
 	 */
 	@Override
 	public void performSearch() {
-		PriorityQueue<List<Operation>> population = new PriorityQueue<List<Operation>>(
+		/*PriorityQueue<List<Operation>> population = new PriorityQueue<List<Operation>>(
 			64, new OrganismComparator(this.startValue, this.targetValue)
 		);
 		for (int i = 0; i < INIT_POPULATION_SIZE; i++) {
@@ -127,9 +127,35 @@ public class GeneticSearch extends Search {
 			debugPrintOrganism(organism);
 			population.add(organism);
 		}
-		// TODO: finish
+		// TODO: finish*/
+		PriorityQueue<List<Operation>> population = new PriorityQueue<List<Operation>>(
+			64, new OrganismComparator(this.startValue, this.targetValue)
+		);
+		for (int i = 0; i < INIT_POPULATION_SIZE; i++) {
+			List<Operation> organism = this.generateNewOrganism();
+			debugPrintOrganism(organism);
+			population.add(organism);
+			mutate(organism);
+			debugPrintOrganism(organism);
+		}
 	}
 
+	/**
+	 * Tests Mutation functions
+	 */
+	public void testMutators(){
+		PriorityQueue<List<Operation>> population = new PriorityQueue<List<Operation>>(
+			64, new OrganismComparator(this.startValue, this.targetValue)
+		);
+		for (int i = 0; i < INIT_POPULATION_SIZE; i++) {
+			List<Operation> organism = this.generateNewOrganism();
+			debugPrintOrganism(organism);
+			population.add(organism);
+			mutate(organism);
+			debugPrintOrganism(organism);
+		}
+
+	}
 	private static class OrganismComparator implements Comparator<List<Operation>> {
 		
 		public final double startValue, targetValue;

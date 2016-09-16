@@ -119,5 +119,6 @@ public class Main {
 		}
 		//begin running the search
 		search.performSearch();
+		//search.testMutators();
 	}
 }
