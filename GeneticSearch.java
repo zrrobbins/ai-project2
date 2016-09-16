@@ -121,6 +121,11 @@ public class GeneticSearch extends Search {
 
 			parent2Index = randomizer.nextInt(parentList.size() - 1);
 			List<Operation> organism2 = parentList.get(parent2Index);
+
+			while(organism1 == organism2 && parentList.size() !=2){
+				parent2Index = randomizer.nextInt(parentList.size() - 1);
+				organism2 = parentList.get(parent2Index);
+			}
 			parentList.remove(parent2Index);
 
 			ParentPair pair = new ParentPair(organism1, organism2);
