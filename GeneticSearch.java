@@ -119,15 +119,6 @@ public class GeneticSearch extends Search {
 	 */
 	@Override
 	public void performSearch() {
-		/*PriorityQueue<List<Operation>> population = new PriorityQueue<List<Operation>>(
-			64, new OrganismComparator(this.startValue, this.targetValue)
-		);
-		for (int i = 0; i < INIT_POPULATION_SIZE; i++) {
-			List<Operation> organism = this.generateNewOrganism();
-			debugPrintOrganism(organism);
-			population.add(organism);
-		}
-		// TODO: finish*/
 		PriorityQueue<List<Operation>> population = new PriorityQueue<List<Operation>>(
 			64, new OrganismComparator(this.startValue, this.targetValue)
 		);
@@ -135,9 +126,9 @@ public class GeneticSearch extends Search {
 			List<Operation> organism = this.generateNewOrganism();
 			debugPrintOrganism(organism);
 			population.add(organism);
-			mutate(organism);
-			debugPrintOrganism(organism);
 		}
+		// TODO: finish
+
 	}
 
 	/**
