@@ -114,12 +114,12 @@ public class GeneticSearch extends Search {
 		int parent2Index = 0;
 		List<ParentPair> pairList = new ArrayList<ParentPair>();//List of pairs
 		//While the parentList has two or more organisms in it randomly pair up two organism and add them to the pairList
-		while(parentList.size() > 2) {
-			parent1Index = randomizer.nextInt(parentList.size() - 1);
+		while(parentList.size() >= 2) {
+			parent1Index = randomizer.nextInt(parentList.size());
 			List<Operation> organism1 = parentList.get(parent1Index);
 			parentList.remove(parent1Index);
 
-			parent2Index = randomizer.nextInt(parentList.size() - 1);
+			parent2Index = randomizer.nextInt(parentList.size());
 			List<Operation> organism2 = parentList.get(parent2Index);
 			parentList.remove(parent2Index);
 
@@ -151,7 +151,13 @@ public class GeneticSearch extends Search {
 			population.add(organism);
 		}
 
-		//selection(population);
+		List<ParentPair> parentPairs = selection(population);
+		for (ParentPair pair : parentPairs) {
+			System.out.println("---------------- pair ---------------");
+			debugPrintOrganism(pair.parentOne);
+			debugPrintOrganism(pair.parentTwo);
+			System.out.println();
+		}
 
 		// TODO: finish
 	}
