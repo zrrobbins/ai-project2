@@ -79,45 +79,49 @@ public class GeneticSearch extends Search {
 
 	/**
 	 * Given two parent organisms, return a two children as the result of a possible crossover operation
-	 * that occurs at rate CROSSOVER_RATE.
+	 * that occurs at rate CROSSOVER_RATE. If crossover doesn't occur, return nothing.
 	 */
 	private List<List<Operation>> reproduce(List<Operation> mother, List<Operation> father) {
+
+		List<Operation> child1 = new LinkedList<Operation>(mother);
+		List<Operation> child2 = new LinkedList<Operation>(father);
+
 		double crossover = Math.random();
 		List<List<Operation>> result = new LinkedList<List<Operation>>();
 
 		if (crossover < CROSSOVER_RATE) { // Crossover 
-			int shortestLength = Math.min(mother.size(), father.size());
+			int shortestLength = Math.min(child1.size(), child2.size());
 			Random rand = new Random();
 			int crossoverPoint = rand.nextInt(shortestLength);
 
-			LinkedList<Operation> motherFront = new LinkedList<Operation>();
-			LinkedList<Operation> fatherFront = new LinkedList<Operation>();
+			LinkedList<Operation> child1Front = new LinkedList<Operation>();
+			LinkedList<Operation> child2Front = new LinkedList<Operation>();
 			
 			for (int i = 0; i < crossoverPoint; i++) {
-				motherFront.add(mother.remove(0));
-				fatherFront.add(father.remove(0));
+				child1Front.add(child1.remove(0));
+				child2Front.add(child2.remove(0));
 			}
 
-			motherFront.addAll(father);
-			fatherFront.addAll(mother);
-			result.add(motherFront);
-			result.add(fatherFront);
-
-			return result;
-		} else { // Don't crossover, return original parents
-			result.add(mother);
-			result.add(father);
-			return result;
+			child1Front.addAll(child2);
+			child2Front.addAll(child1);
+			result.add(child1Front);
+			result.add(child2Front);
 		}
+		return result;
 	}
 
 	private void testReproduce(List<Operation> mother, List<Operation> father) {
-		System.out.println("\nCROSSOVER/REPRODUCTION TEST:\n Before swap:");
+		System.out.println("\nCROSSOVER/REPRODUCTION TEST:\nBefore swap:");
 		System.out.println(mother);
 		System.out.println(father);
 		List<List<Operation>> swappedOrganisms = reproduce(mother, father);
-		System.out.println("\n" + swappedOrganisms.get(0));
-		System.out.println(swappedOrganisms.get(1));
+		if (swappedOrganisms.size() > 0) {
+			System.out.println("\nAfter swap:");
+			System.out.println(swappedOrganisms.get(0));
+			System.out.println(swappedOrganisms.get(1));
+		} else {
+			System.out.println("No crossover");
+		}
 	}
 
 	private void mutate(List<Operation> organism) {
