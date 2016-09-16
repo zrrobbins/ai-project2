@@ -18,6 +18,7 @@ public class GeneticSearch extends Search {
 
 	int nodesExpanded = 0;
 	final int INIT_POPULATION_SIZE = 10;
+	final double CROSSOVER_RATE = .75;
 
 	public GeneticSearch(double startValue, double targetValue, double timeLimit, Operation[] operations) {
 		super(startValue,  targetValue, timeLimit, operations);
@@ -76,8 +77,47 @@ public class GeneticSearch extends Search {
 		System.out.println("]");
 	}
 
-	private List<Operation> reproduce(List<Operation> mother, List<Operation> father) {
-		return null; // TODO
+	/**
+	 * Given two parent organisms, return a two children as the result of a possible crossover operation
+	 * that occurs at rate CROSSOVER_RATE.
+	 */
+	private List<List<Operation>> reproduce(List<Operation> mother, List<Operation> father) {
+		double crossover = Math.random();
+		List<List<Operation>> result = new LinkedList<List<Operation>>();
+
+		if (crossover < CROSSOVER_RATE) { // Crossover 
+			int shortestLength = Math.min(mother.size(), father.size());
+			Random rand = new Random();
+			int crossoverPoint = rand.nextInt(shortestLength);
+
+			LinkedList<Operation> motherFront = new LinkedList<Operation>();
+			LinkedList<Operation> fatherFront = new LinkedList<Operation>();
+			
+			for (int i = 0; i < crossoverPoint; i++) {
+				motherFront.add(mother.remove(0));
+				fatherFront.add(father.remove(0));
+			}
+
+			motherFront.addAll(father);
+			fatherFront.addAll(mother);
+			result.add(motherFront);
+			result.add(fatherFront);
+
+			return result;
+		} else { // Don't crossover, return original parents
+			result.add(mother);
+			result.add(father);
+			return result;
+		}
+	}
+
+	private void testReproduce(List<Operation> mother, List<Operation> father) {
+		System.out.println("\nCROSSOVER/REPRODUCTION TEST:\n Before swap:");
+		System.out.println(mother);
+		System.out.println(father);
+		List<List<Operation>> swappedOrganisms = reproduce(mother, father);
+		System.out.println("\n" + swappedOrganisms.get(0));
+		System.out.println(swappedOrganisms.get(1));
 	}
 
 	private void mutate(List<Operation> organism) {
@@ -97,6 +137,10 @@ public class GeneticSearch extends Search {
 			debugPrintOrganism(organism);
 			population.add(organism);
 		}
+
+		// This pulls the top two organisms off of the priority queue and simulates crossover
+		testReproduce(population.poll(), population.poll());
+
 		// TODO: finish
 	}
 
