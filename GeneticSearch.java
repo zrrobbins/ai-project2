@@ -17,11 +17,12 @@ import java.util.ArrayList;
  */
 public class GeneticSearch extends Search {
 
+	final boolean DEBUG = false;
 	final int INIT_POPULATION_SIZE = 10;
 	final int NUMBER_OF_PARENTS = 10;
 	final double REPRODUCTION_RATE = 0.75;
 	final double MUTATION_RATE = 0.15;
-	final int MIN_INIT_ORGANISM_LENGTH = 5;
+	final int MIN_INIT_ORGANISM_LENGTH = 0;
 	final int MAX_INIT_ORGANISM_LENGTH = 30;
 	final int SIZE_REQUIRED_FOR_CULL = 1000;
 	final int AMOUNT_TO_CULL = 500;
@@ -139,31 +140,41 @@ public class GeneticSearch extends Search {
 	 * @return        a list of offspring organisms
 	 */
 	private List<Organism> reproduce(ParentPair parents) {
-
-		List<Operation> child1Ops = new LinkedList<Operation>(parents.parentOne.operations);
-		List<Operation> child2Ops = new LinkedList<Operation>(parents.parentTwo.operations);
-
-		double r = Math.random();
 		List<Organism> result = new LinkedList<Organism>();
+		if (Math.random() >= REPRODUCTION_RATE) return result;
 
-		if (r < REPRODUCTION_RATE) {
-			int shortestLength = Math.min(child1Ops.size(), child2Ops.size());
-			Random rand = 	new Random();
-			int crossoverPoint = rand.nextInt(shortestLength);
-
-			LinkedList<Operation> child1Front = new LinkedList<Operation>();
-			LinkedList<Operation> child2Front = new LinkedList<Operation>();
-			
-			for (int i = 0; i < crossoverPoint; i++) {
-				child1Front.add(child1Ops.remove(0));
-				child2Front.add(child2Ops.remove(0));
-			}
-
-			child1Front.addAll(child2Ops);
-			child2Front.addAll(child1Ops);
-			result.add(new Organism(child1Front, this.startValue));
-			result.add(new Organism(child2Front, this.startValue));
+		Organism p1 = parents.parentOne;
+		Organism p2 = parents.parentTwo;
+		Random rand = new Random();
+		int cut1 = rand.nextInt(p1.numOperations - 1) + 1;
+		int cut2 = rand.nextInt(p2.numOperations - 1) + 1;
+		List<Operation> c1 = new LinkedList<Operation>();
+		List<Operation> c2 = new LinkedList<Operation>();
+		for (int i = 0; i < cut1; i++) {
+			c1.add(p1.operations.get(i));
 		}
+		for (int i = cut2; i < p2.numOperations; i++) {
+			c1.add(p2.operations.get(i));
+		}
+		for (int i = 0; i < cut2; i++) {
+			c2.add(p2.operations.get(i));
+		}
+		for (int i = cut1; i < p1.numOperations; i++) {
+			c2.add(p1.operations.get(i));
+		}
+
+		result.add(new Organism(c1, this.startValue));
+		result.add(new Organism(c2, this.startValue));
+
+		if (DEBUG) {
+			System.out.println();
+			System.out.println("------------- reproduction -------------");
+			debugPrintOrganism(p1);
+			debugPrintOrganism(p2);
+			debugPrintOrganism(result.get(0));
+			debugPrintOrganism(result.get(1));
+		}
+
 		return result;
 	}
 
@@ -205,8 +216,20 @@ public class GeneticSearch extends Search {
 			population.add(this.generateNewOrganism());
 		}
 
-		while (System.currentTimeMillis() - startTimeMillis < timeLimit * 1000) {
-			
+		while (true) {
+
+			if (!DEBUG && System.currentTimeMillis() - startTimeMillis >= timeLimit * 1000) break;
+
+			if (DEBUG) {
+				System.out.println();
+				System.out.println("---------------- population ----------------");
+				PriorityQueue<Organism> dbgPop = new PriorityQueue<Organism>(population);
+				while (!dbgPop.isEmpty()) {
+					debugPrintOrganism(dbgPop.poll());
+				}
+				System.console().readLine();				
+			}
+
 			List<ParentPair> parentPairs = selectParents(population);
 			for (ParentPair parentPair : parentPairs) {
 				for (Organism child : reproduce(parentPair)) {
@@ -218,6 +241,7 @@ public class GeneticSearch extends Search {
 		}
 
 		// TODO: printing results
+		debugPrintOrganism(population.poll());
 	}
 
 	private static class OrganismComparator implements Comparator<Organism> {
@@ -259,8 +283,8 @@ public class GeneticSearch extends Search {
 		List<Organism> swappedOrganisms = reproduce(new ParentPair(mother, father));
 		if (swappedOrganisms.size() > 0) {
 			System.out.println("\nAfter swap:");
-			System.out.println(swappedOrganisms.get(0));
-			System.out.println(swappedOrganisms.get(1));
+			debugPrintOrganism(swappedOrganisms.get(0));
+			debugPrintOrganism(swappedOrganisms.get(1));
 		} else {
 			System.out.println("No crossover");
 		}
