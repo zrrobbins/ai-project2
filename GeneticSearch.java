@@ -207,12 +207,6 @@ public class GeneticSearch extends Search {
 
 		while (System.currentTimeMillis() - startTimeMillis < timeLimit * 1000) {
 			
-			PriorityQueue<Organism> dbgPop = new PriorityQueue<Organism>(population);
-			for (int i = 0; i < dbgPop.size(); i++) {
-				debugPrintOrganism(dbgPop.poll());
-			}
-			System.console().readLine();
-
 			List<ParentPair> parentPairs = selectParents(population);
 			for (ParentPair parentPair : parentPairs) {
 				for (Organism child : reproduce(parentPair)) {
