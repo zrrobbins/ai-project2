@@ -19,7 +19,7 @@ public class GeneticSearch extends Search {
 
 	final int INIT_POPULATION_SIZE = 10;
 	final int NUMBER_OF_PARENTS = 10;
-	final double CROSSOVER_RATE = 0.75;
+	final double REPRODUCTION_RATE = 0.75;
 	final double MUTATION_RATE = 0.15;
 	final int MIN_INIT_ORGANISM_LENGTH = 5;
 	final int MAX_INIT_ORGANISM_LENGTH = 30;
@@ -36,12 +36,12 @@ public class GeneticSearch extends Search {
 	 *
 	 * @return the new organism
 	 */
-	private List<Operation> generateNewOrganism() {
+	private Organism generateNewOrganism() {
 		Random rand = new Random();
 		int len = rand.nextInt(
 			MAX_INIT_ORGANISM_LENGTH - MIN_INIT_ORGANISM_LENGTH + 1
 		) + MIN_INIT_ORGANISM_LENGTH;
-		List<Operation> result = new LinkedList<Operation>();
+		List<Operation> ops = new LinkedList<Operation>();
 		double val = this.startValue;
 		for (int i = 0; i < len; i++) {
 			boolean useGreedy = rand.nextInt(2) == 0;
@@ -58,10 +58,10 @@ public class GeneticSearch extends Search {
 			} else {
 				toAdd = this.operations[rand.nextInt(this.operations.length)];
 			}
-			result.add(toAdd);
+			ops.add(toAdd);
 			val = toAdd.applyTo(val);
 		}
-		return result;
+		return new Organism(ops, this.startValue);
 	}
 
 	/**
@@ -74,19 +74,19 @@ public class GeneticSearch extends Search {
 	 * @return           a list of pairs of parents, with a maximum length
 	 *                   of NUMBER_OF_PARENTS
 	 */
-	private List<ParentPair> selectParents(PriorityQueue<List<Operation>> population){
-		List<List<Operation>> parentList = new ArrayList<List<Operation>>();
+	private List<ParentPair> selectParents(PriorityQueue<Organism> population){
+		List<Organism> parentList = new ArrayList<Organism>();
 		Random randomizer = new Random();
 
 		//This while loop will run until we have filled the parentList
-		while(parentList.size() < NUMBER_OF_PARENTS){
+		while(parentList.size() < NUMBER_OF_PARENTS) {
 			//currentProbNumerator is the numerator for the probability calculations(ie in a 10 item list the chance for the first item being selected will be 9/10)
-			//Similiarly probDenominator is the denominator for these calculations
+			//Similarly probDenominator is the denominator for these calculations
 			int currentProbNumerator = population.size() - 1;
 			int probDenominator = population.size();
 
 			//Run through the population list. -Note we will keep doing this until
-			for(List<Operation> organism : population){
+			for(Organism organism : population){
 
 				//Make sure that the parent list isn't too big
 				if(parentList.size() == NUMBER_OF_PARENTS){
@@ -112,11 +112,11 @@ public class GeneticSearch extends Search {
 		//While the parentList has two or more organisms in it randomly pair up two organism and add them to the pairList
 		while(parentList.size() >= 2) {
 			parent1Index = randomizer.nextInt(parentList.size());
-			List<Operation> organism1 = parentList.get(parent1Index);
+			Organism organism1 = parentList.get(parent1Index);
 			parentList.remove(parent1Index);
 
 			parent2Index = randomizer.nextInt(parentList.size());
-			List<Operation> organism2 = parentList.get(parent2Index);
+			Organism organism2 = parentList.get(parent2Index);
 
 			while(organism1 == organism2 && parentList.size() !=2){
 				parent2Index = randomizer.nextInt(parentList.size());
@@ -130,64 +130,41 @@ public class GeneticSearch extends Search {
 		return pairList;
 	}
 
-
-
 	/**
 	 * Given a pair of parent organisms, return a two children as the result of
-	 * a possible crossover operation that occurs at rate CROSSOVER_RATE. If
+	 * a possible crossover operation that occurs at rate REPRODUCTION_RATE. If
 	 * crossover doesn't occur, return an empty list.
 	 *
 	 * @param parents pair of parents from which children will be derived
 	 * @return        a list of offspring organisms
 	 */
-	private List<List<Operation>> reproduce(ParentPair parents) {
+	private List<Organism> reproduce(ParentPair parents) {
 
-		List<Operation> child1 = new LinkedList<Operation>(parents.parentOne);
-		List<Operation> child2 = new LinkedList<Operation>(parents.parentTwo);
+		List<Operation> child1Ops = new LinkedList<Operation>(parents.parentOne.operations);
+		List<Operation> child2Ops = new LinkedList<Operation>(parents.parentTwo.operations);
 
-		double crossover = Math.random();
-		List<List<Operation>> result = new LinkedList<List<Operation>>();
+		double r = Math.random();
+		List<Organism> result = new LinkedList<Organism>();
 
-		if (crossover < CROSSOVER_RATE) {
-			int shortestLength = Math.min(child1.size(), child2.size());
-			Random rand = new Random();
+		if (r < REPRODUCTION_RATE) {
+			int shortestLength = Math.min(child1Ops.size(), child2Ops.size());
+			Random rand = 	new Random();
 			int crossoverPoint = rand.nextInt(shortestLength);
 
 			LinkedList<Operation> child1Front = new LinkedList<Operation>();
 			LinkedList<Operation> child2Front = new LinkedList<Operation>();
 			
 			for (int i = 0; i < crossoverPoint; i++) {
-				child1Front.add(child1.remove(0));
-				child2Front.add(child2.remove(0));
+				child1Front.add(child1Ops.remove(0));
+				child2Front.add(child2Ops.remove(0));
 			}
 
-			child1Front.addAll(child2);
-			child2Front.addAll(child1);
-			result.add(child1Front);
-			result.add(child2Front);
+			child1Front.addAll(child2Ops);
+			child2Front.addAll(child1Ops);
+			result.add(new Organism(child1Front, this.startValue));
+			result.add(new Organism(child2Front, this.startValue));
 		}
 		return result;
-	}
-
-	/**
-	 * Makes a random mutation with a chance of MUTATION_RATE. If a mutation
-	 * occurs, it is equally likely to be the removal of an operation, the
-	 * addition of an operation, or the changing of an operation.
-	 *
-	 * @param organism the organism to be potentially mutated
-	 */
-	public void mutate(List<Operation> organism) {
-		Random rand = new Random();
-		double r = rand.nextDouble();
-		int j = rand.nextInt(organism.size());
-		int i = rand.nextInt(this.operations.length);
-		if (r < MUTATION_RATE / 3) {
-			organism.remove(j);
-		} else if (r < MUTATION_RATE / 3 * 2) {
-			organism.add(j, this.operations[i]);
-		} else if (r < MUTATION_RATE) {
-			organism.set(j, this.operations[i]);
-		}
 	}
 
 	/**
@@ -197,12 +174,14 @@ public class GeneticSearch extends Search {
 	 * @param population list of organisms to cull
 	 * @return           population after potential culling
 	 */
-	public PriorityQueue<List<Operation>> cull(PriorityQueue<List<Operation>> population) {
+	public PriorityQueue<Organism> cull(PriorityQueue<Organism> population) {
 		int popSize = population.size();
-		if (popSize < SIZE_REQUIRED_FOR_CULL) return population;
+		if (popSize < SIZE_REQUIRED_FOR_CULL) {
+			return population;	
+		} 
 		int newPopSize = popSize - AMOUNT_TO_CULL;
-		PriorityQueue<List<Operation>> result = new PriorityQueue<List<Operation>>(
-			newPopSize, new OrganismComparator(this.startValue, this.targetValue)
+		PriorityQueue<Organism> result = new PriorityQueue<Organism>(
+			newPopSize, new OrganismComparator(this.targetValue)
 		);
 		for (int i = 0; i < popSize - AMOUNT_TO_CULL; i++) {
 			result.add(population.poll());
@@ -219,19 +198,24 @@ public class GeneticSearch extends Search {
 		long startTimeMillis = System.currentTimeMillis();
 
 		// Initialize population
-		PriorityQueue<List<Operation>> population = new PriorityQueue<List<Operation>>(
-			64, new OrganismComparator(this.startValue, this.targetValue)
+		PriorityQueue<Organism> population = new PriorityQueue<Organism>(
+			64, new OrganismComparator(this.targetValue)
 		);
 		for (int i = 0; i < INIT_POPULATION_SIZE; i++) {
-			List<Operation> organism = this.generateNewOrganism();
-			population.add(organism);
+			population.add(this.generateNewOrganism());
 		}
 
 		while (System.currentTimeMillis() - startTimeMillis < timeLimit * 1000) {
 			
+			PriorityQueue<Organism> dbgPop = new PriorityQueue<Organism>(population);
+			for (int i = 0; i < dbgPop.size(); i++) {
+				debugPrintOrganism(dbgPop.poll());
+			}
+			System.console().readLine();
+
 			List<ParentPair> parentPairs = selectParents(population);
 			for (ParentPair parentPair : parentPairs) {
-				for (List<Operation> child : reproduce(parentPair)) {
+				for (Organism child : reproduce(parentPair)) {
 					population.add(child);
 				}
 			}
@@ -240,58 +224,45 @@ public class GeneticSearch extends Search {
 		}
 
 		// TODO: printing results
-		debugPrintOrganism(population.poll());
 	}
 
-	private static class OrganismComparator implements Comparator<List<Operation>> {
+	private static class OrganismComparator implements Comparator<Organism> {
 		
-		public final double targetValue, startValue;
+		public final double targetValue;
 
-		public OrganismComparator(double startValue, double targetValue) {
-			this.startValue = startValue;
+		public OrganismComparator(double targetValue) {
 			this.targetValue = targetValue;
 		}
+
 		@Override
-		public int compare(List<Operation> a, List<Operation> b) {
-			double aVal = startValue;
-			for (Operation op : a) {
-				aVal = op.applyTo(aVal);
-			}
-			double bVal = startValue;
-			for (Operation op : b) {
-				bVal = op.applyTo(bVal);
-			}
-			double aDiff = Math.abs(aVal - this.targetValue);
-			double bDiff = Math.abs(bVal - this.targetValue);
-			return aDiff == bDiff ? 0  :
-			       aDiff <  bDiff ? -1 : 1;
-		}	
+		public int compare(Organism a, Organism b) {
+			double aDiff = Math.abs(a.resultValue - this.targetValue);
+			double bDiff = Math.abs(b.resultValue - this.targetValue);
+			return (
+				aDiff == bDiff ? 
+				Integer.compare(a.numOperations, b.numOperations) : 
+				(aDiff < bDiff ? -1 : 1)
+			);
+		}
 	}
 
 
 	/* DEBUGGING METHODS */
 
-	/**
-	 * Tests Mutation functions
-	 */
 	public void testMutators(){
-		PriorityQueue<List<Operation>> population = new PriorityQueue<List<Operation>>(
-			64, new OrganismComparator(this.startValue, this.targetValue)
-		);
 		for (int i = 0; i < INIT_POPULATION_SIZE; i++) {
-			List<Operation> organism = this.generateNewOrganism();
+			Organism organism = this.generateNewOrganism();
 			debugPrintOrganism(organism);
-			population.add(organism);
-			mutate(organism);
-			debugPrintOrganism(organism);
+			Organism mutated = organism.mutate(this.operations, this.startValue);
+			debugPrintOrganism(mutated);
 		}
 	}
 
-	private void testReproduce(List<Operation> mother, List<Operation> father) {
+	private void testReproduce(Organism mother, Organism father) {
 		System.out.println("\nCROSSOVER/REPRODUCTION TEST:\nBefore swap:");
-		System.out.println(mother);
-		System.out.println(father);
-		List<List<Operation>> swappedOrganisms = reproduce(new ParentPair(mother, father));
+		debugPrintOrganism(mother);
+		debugPrintOrganism(father);
+		List<Organism> swappedOrganisms = reproduce(new ParentPair(mother, father));
 		if (swappedOrganisms.size() > 0) {
 			System.out.println("\nAfter swap:");
 			System.out.println(swappedOrganisms.get(0));
@@ -301,16 +272,16 @@ public class GeneticSearch extends Search {
 		}
 	}
 
-	private void debugPrintOrganism(List<Operation> organism) {
+	private void debugPrintOrganism(Organism organism) {
 		System.out.print("[");
 		boolean firstIter = true;
-		for (Operation op : organism) {
+		for (Operation op : organism.operations) {
 			if (!firstIter) {
 				System.out.print(", ");
 			}
 			System.out.print(op + "");
 			firstIter = false;
 		}
-		System.out.println("]");
+		System.out.println("]: " + organism.resultValue);
 	}
 }
