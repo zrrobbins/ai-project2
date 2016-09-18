@@ -158,12 +158,12 @@ public class GeneticSearch extends Search {
 		result.add(new Organism(c2, this.startValue));
 
 		if (DEBUG) {
-			System.out.println();
-			System.out.println("------------- reproduction -------------");
-			debugPrintOrganism(p1);
-			debugPrintOrganism(p2);
-			debugPrintOrganism(result.get(0));
-			debugPrintOrganism(result.get(1));
+			System.err.println();
+			System.err.println("------------- reproduction -------------");
+			System.err.println(p1);
+			System.err.println(p2);
+			System.err.println(result.get(0));
+			System.err.println(result.get(1));
 		}
 
 		return result;
@@ -207,10 +207,10 @@ public class GeneticSearch extends Search {
 			if (Math.random() < MUTATION_RATE) {
 				Organism newOrg = org.mutate(this.operations, this.startValue);
 				if (DEBUG) {
-					System.out.println();
-					System.out.println("-------------- mutation --------------");
-					debugPrintOrganism(org);
-					debugPrintOrganism(newOrg);
+					System.err.println();
+					System.err.println("-------------- mutation --------------");
+					System.err.println(org);
+					System.err.println(newOrg);
 				}
 				result.add(newOrg);
 			} else {
@@ -241,11 +241,11 @@ public class GeneticSearch extends Search {
 			if (!DEBUG && System.currentTimeMillis() - startTimeMillis >= timeLimit * 1000) break;
 
 			if (DEBUG) {
-				System.out.println();
-				System.out.println("---------------- population ----------------");
+				System.err.println();
+				System.err.println("================ population ================");
 				PriorityQueue<Organism> dbgPop = new PriorityQueue<Organism>(population);
 				while (!dbgPop.isEmpty()) {
-					debugPrintOrganism(dbgPop.poll());
+					System.err.println(dbgPop.poll());
 				}
 				System.console().readLine();				
 			}
@@ -260,7 +260,7 @@ public class GeneticSearch extends Search {
 		}
 
 		// TODO: printing results
-		debugPrintOrganism(population.poll());
+		System.out.println(population.poll());
 	}
 
 	private static class OrganismComparator implements Comparator<Organism> {
@@ -289,36 +289,23 @@ public class GeneticSearch extends Search {
 	public void testMutators(){
 		for (int i = 0; i < INIT_POPULATION_SIZE; i++) {
 			Organism organism = this.generateNewOrganism();
-			debugPrintOrganism(organism);
+			System.err.println(organism);
 			Organism mutated = organism.mutate(this.operations, this.startValue);
-			debugPrintOrganism(mutated);
+			System.err.println(mutated);
 		}
 	}
 
 	private void testReproduce(Organism mother, Organism father) {
-		System.out.println("\nCROSSOVER/REPRODUCTION TEST:\nBefore swap:");
-		debugPrintOrganism(mother);
-		debugPrintOrganism(father);
+		System.err.println("\nCROSSOVER/REPRODUCTION TEST:\nBefore swap:");
+		System.err.println(mother);
+		System.err.println(father);
 		List<Organism> swappedOrganisms = reproduce(new ParentPair(mother, father));
 		if (swappedOrganisms.size() > 0) {
-			System.out.println("\nAfter swap:");
-			debugPrintOrganism(swappedOrganisms.get(0));
-			debugPrintOrganism(swappedOrganisms.get(1));
+			System.err.println("\nAfter swap:");
+			System.err.println(swappedOrganisms.get(0));
+			System.err.println(swappedOrganisms.get(1));
 		} else {
-			System.out.println("No crossover");
+			System.err.println("No crossover");
 		}
-	}
-
-	private void debugPrintOrganism(Organism organism) {
-		System.out.print("[");
-		boolean firstIter = true;
-		for (Operation op : organism.operations) {
-			if (!firstIter) {
-				System.out.print(", ");
-			}
-			System.out.print(op + "");
-			firstIter = false;
-		}
-		System.out.println("]: " + organism.resultValue);
 	}
 }

@@ -58,4 +58,17 @@ public class Organism {
 		}
 		return new Organism(newOps, startValue);
 	}
+
+	@Override
+	public String toString() {
+		String result = "[";
+		boolean firstIter = true;
+		for (Operation op : this.operations) {
+			if (!firstIter) result += " ";
+			result += op;
+			firstIter = false;
+		}
+		result += "] = " + this.resultValue;
+		return result;
+	}
 } 
