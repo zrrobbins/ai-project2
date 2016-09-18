@@ -18,7 +18,7 @@ import java.util.Random;
  */
 public class GeneticSearch extends Search {
 
-	final boolean DEBUG = true;
+	final boolean DEBUG = false;
 	final boolean STOP_WHEN_RESULT_FOUND = false;
 	final int INIT_POPULATION_SIZE = 10;
 	final int NUMBER_OF_PARENTS = 10;
@@ -161,10 +161,10 @@ public class GeneticSearch extends Search {
 		if (DEBUG) {
 			System.err.println();
 			System.err.println("------------- reproduction -------------");
-			System.err.println(p1);
-			System.err.println(p2);
-			System.err.println(result.get(0));
-			System.err.println(result.get(1));
+			System.err.println("mother: " + p1);
+			System.err.println("father: " + p2);
+			System.err.println("child1: " + result.get(0));
+			System.err.println("child2: " + result.get(1));
 		}
 
 		return result;
@@ -210,8 +210,8 @@ public class GeneticSearch extends Search {
 				if (DEBUG) {
 					System.err.println();
 					System.err.println("-------------- mutation --------------");
-					System.err.println(org);
-					System.err.println(newOrg);
+					System.err.println("before: " + org);
+					System.err.println(" after: " + newOrg);
 				}
 				result.add(newOrg);
 			} else {
