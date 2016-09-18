@@ -19,6 +19,7 @@ import java.util.Random;
 public class GeneticSearch extends Search {
 
 	final boolean DEBUG = false;
+	final boolean STOP_WHEN_RESULT_FOUND = false;
 	final int INIT_POPULATION_SIZE = 10;
 	final int NUMBER_OF_PARENTS = 10;
 	final double REPRODUCTION_RATE = 0.75;
@@ -236,9 +237,8 @@ public class GeneticSearch extends Search {
 			population.add(this.generateNewOrganism());
 		}
 
-		while (true) {
-
-			if (!DEBUG && System.currentTimeMillis() - startTimeMillis >= timeLimit * 1000) break;
+		int numGenerations = 1;
+		while (DEBUG || System.currentTimeMillis() - startTimeMillis < timeLimit * 1000) {
 
 			if (DEBUG) {
 				System.err.println();
@@ -250,6 +250,10 @@ public class GeneticSearch extends Search {
 				System.console().readLine();				
 			}
 
+			if (STOP_WHEN_RESULT_FOUND && population.peek().resultValue == this.targetValue) {
+				break;
+			}
+
 			List<ParentPair> parentPairs = selectParents(population);
 			for (ParentPair parentPair : parentPairs) {
 				for (Organism child : reproduce(parentPair)) {
@@ -257,10 +261,23 @@ public class GeneticSearch extends Search {
 				}
 			}
 			population = mutate(cull(population));
+			numGenerations += 1;
 		}
+		double secsTaken = (System.currentTimeMillis() - startTimeMillis) / 1000.0;
 
-		// TODO: printing results
-		System.out.println(population.poll());
+		Organism result = population.peek();
+		double val = this.startValue;
+		for (Operation op : result.operations) {
+			System.out.print(val + " " +  op);
+			val = op.applyTo(val);
+			System.out.println(" = " + val);
+		}
+		System.out.println();
+		System.out.println("Error: " + Math.abs(result.resultValue - this.targetValue));
+		System.out.println("Size of organism: " + result.numOperations);
+		System.out.println("Search required: " + secsTaken + " seconds");
+		System.out.println("Population size: " + population.size());
+		System.out.println("Number of generations: " + numGenerations);
 	}
 
 	private static class OrganismComparator implements Comparator<Organism> {
