@@ -5,15 +5,16 @@
  * Group: Zachary Robbins, Kyle McCormick, Elijah Gonzalez, Peter Raspe
  */
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List; 
 import java.util.PriorityQueue;
 import java.util.Random;
-import java.util.ArrayList;
 
 /**
- * Implementation of Iterative Deepening Search.
+ * Implementation of Genetic search
  */
 public class GeneticSearch extends Search {
 
@@ -21,8 +22,8 @@ public class GeneticSearch extends Search {
 	final int INIT_POPULATION_SIZE = 10;
 	final int NUMBER_OF_PARENTS = 10;
 	final double REPRODUCTION_RATE = 0.75;
-	final double MUTATION_RATE = 0.15;
-	final int MIN_INIT_ORGANISM_LENGTH = 0;
+	final double MUTATION_RATE = 0.1;
+	final int MIN_INIT_ORGANISM_LENGTH = 1;
 	final int MAX_INIT_ORGANISM_LENGTH = 30;
 	final int SIZE_REQUIRED_FOR_CULL = 1000;
 	final int AMOUNT_TO_CULL = 500;
@@ -106,27 +107,18 @@ public class GeneticSearch extends Search {
 			}
 		}
 
-		// TODO make this work in all cases
-		int parent1Index = 0;
-		int parent2Index = 0;
 		List<ParentPair> pairList = new ArrayList<ParentPair>();//List of pairs
-		//While the parentList has two or more organisms in it randomly pair up two organism and add them to the pairList
-		while(parentList.size() >= 2) {
-			parent1Index = randomizer.nextInt(parentList.size());
-			Organism organism1 = parentList.get(parent1Index);
-			parentList.remove(parent1Index);
-
-			parent2Index = randomizer.nextInt(parentList.size());
-			Organism organism2 = parentList.get(parent2Index);
-
-			while(organism1 == organism2 && parentList.size() !=2){
-				parent2Index = randomizer.nextInt(parentList.size());
-				organism2 = parentList.get(parent2Index);
+		Collections.shuffle(parentList);
+		while (parentList.size() >= 2) {
+			Organism parent1 = parentList.remove(0);
+			for (int i = 0; i < parentList.size(); i++) {
+				Organism parent2 = parentList.get(i);
+				if (parent1 != parent2) {
+					parentList.remove(i);
+					pairList.add(new ParentPair(parent1, parent2));
+					break;
+				}
 			}
-			parentList.remove(parent2Index);
-
-			ParentPair pair = new ParentPair(organism1, organism2);
-			pairList.add(pair);
 		}
 		return pairList;
 	}
@@ -146,8 +138,8 @@ public class GeneticSearch extends Search {
 		Organism p1 = parents.parentOne;
 		Organism p2 = parents.parentTwo;
 		Random rand = new Random();
-		int cut1 = rand.nextInt(p1.numOperations - 1) + 1;
-		int cut2 = rand.nextInt(p2.numOperations - 1) + 1;
+		int cut1 = p1.numOperations <= 2 ? 1 : rand.nextInt(p1.numOperations - 2) + 1;
+		int cut2 = p2.numOperations <= 2 ? 1 : rand.nextInt(p2.numOperations - 2) + 1;
 		List<Operation> c1 = new LinkedList<Operation>();
 		List<Operation> c2 = new LinkedList<Operation>();
 		for (int i = 0; i < cut1; i++) {
@@ -162,7 +154,6 @@ public class GeneticSearch extends Search {
 		for (int i = cut1; i < p1.numOperations; i++) {
 			c2.add(p1.operations.get(i));
 		}
-
 		result.add(new Organism(c1, this.startValue));
 		result.add(new Organism(c2, this.startValue));
 
@@ -189,13 +180,42 @@ public class GeneticSearch extends Search {
 		int popSize = population.size();
 		if (popSize < SIZE_REQUIRED_FOR_CULL) {
 			return population;	
-		} 
+		}
 		int newPopSize = popSize - AMOUNT_TO_CULL;
 		PriorityQueue<Organism> result = new PriorityQueue<Organism>(
 			newPopSize, new OrganismComparator(this.targetValue)
 		);
 		for (int i = 0; i < popSize - AMOUNT_TO_CULL; i++) {
 			result.add(population.poll());
+		}
+		return result;
+	}
+
+	/**
+	 * Goes through population and mutates at a rate of MUTATION_RATE.
+	 *
+	 * @param population organisms to potentially mutate; is emptied by this
+	 *                   this function
+	 * @return           population after mutation
+	 */
+	public PriorityQueue<Organism> mutate(PriorityQueue<Organism> population) {
+		PriorityQueue<Organism> result = new PriorityQueue<Organism>(
+			64, new OrganismComparator(this.targetValue)
+		);
+		while (!population.isEmpty()) {
+			Organism org = population.poll();
+			if (Math.random() < MUTATION_RATE) {
+				Organism newOrg = org.mutate(this.operations, this.startValue);
+				if (DEBUG) {
+					System.out.println();
+					System.out.println("-------------- mutation --------------");
+					debugPrintOrganism(org);
+					debugPrintOrganism(newOrg);
+				}
+				result.add(newOrg);
+			} else {
+				result.add(org);
+			}
 		}
 		return result;
 	}
@@ -236,8 +256,7 @@ public class GeneticSearch extends Search {
 					population.add(child);
 				}
 			}
-			population = cull(population);
-			// TODO: mutate
+			population = mutate(cull(population));
 		}
 
 		// TODO: printing results

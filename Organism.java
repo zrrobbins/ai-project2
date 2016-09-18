@@ -40,8 +40,12 @@ public class Organism {
 		Operation newOp = availableOps[rand.nextInt(availableOps.length)];
 		switch (rand.nextInt(3)) {
 			case 0:
-				newOps.remove(i);
-				break;
+				if (this.numOperations > 1) {					
+					newOps.remove(i);
+					break;
+				} else {
+					// Fall-through to case 1!
+				}
 			case 1:
 				newOps.add(i, newOp);
 				break;
@@ -51,4 +55,4 @@ public class Organism {
 		}
 		return new Organism(newOps, startValue);
 	}
-}
+} 
