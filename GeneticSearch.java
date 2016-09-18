@@ -290,6 +290,9 @@ public class GeneticSearch extends Search {
 
 		@Override
 		public int compare(Organism a, Organism b) {
+			if (Double.isNaN(a.resultValue) && Double.isNaN(b.resultValue)) return 0;
+			if (Double.isNaN(a.resultValue)) return 1;
+			if (Double.isNaN(b.resultValue)) return -1;
 			double aDiff = Math.abs(a.resultValue - this.targetValue);
 			double bDiff = Math.abs(b.resultValue - this.targetValue);
 			return (
