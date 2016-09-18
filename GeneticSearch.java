@@ -18,16 +18,16 @@ import java.util.Random;
  */
 public class GeneticSearch extends Search {
 
-	final boolean DEBUG = true;
+	final boolean DEBUG = false;
 	final boolean STOP_WHEN_RESULT_FOUND = false;
-	final int INIT_POPULATION_SIZE = 10;
-	final int NUMBER_OF_PARENTS = 10;
-	final double REPRODUCTION_RATE = 0.75;
-	final double MUTATION_RATE = 0.1;
+	final int INIT_POPULATION_SIZE = 1000;
+	final int NUMBER_OF_PARENTS = 20;
+	final double REPRODUCTION_RATE = 0.8;
+	final double MUTATION_RATE = .1;
 	final int MIN_INIT_ORGANISM_LENGTH = 1;
-	final int MAX_INIT_ORGANISM_LENGTH = 30;
-	final int SIZE_REQUIRED_FOR_CULL = 1000;
-	final int AMOUNT_TO_CULL = 500;
+	final int MAX_INIT_ORGANISM_LENGTH = 300;
+	final int SIZE_REQUIRED_FOR_CULL = 2000;
+	final int AMOUNT_TO_CULL = 1;
 
 	public GeneticSearch(double startValue, double targetValue, double timeLimit, Operation[] operations) {
 		super(startValue,  targetValue, timeLimit, operations);
@@ -266,6 +266,18 @@ public class GeneticSearch extends Search {
 		double secsTaken = (System.currentTimeMillis() - startTimeMillis) / 1000.0;
 
 		Organism result = population.peek();
+		System.out.println("DEBUG:");
+		int numSameAnswers = 0;
+		for (Organism organism : population) {
+			if (organism.toString() == result.toString()) {
+				System.out.print(".");
+				numSameAnswers++;
+			} else {
+				System.out.println(organism.toString());
+			}
+		}
+		System.out.println("Num same answers: " + numSameAnswers);
+
 		double val = this.startValue;
 		for (Operation op : result.operations) {
 			System.out.print(val + " " +  op);
