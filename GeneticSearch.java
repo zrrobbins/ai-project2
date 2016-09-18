@@ -18,7 +18,7 @@ import java.util.Random;
  */
 public class GeneticSearch extends Search {
 
-	final boolean DEBUG = false;
+	final boolean DEBUG = true;
 	final boolean STOP_WHEN_RESULT_FOUND = false;
 	final int INIT_POPULATION_SIZE = 10;
 	final int NUMBER_OF_PARENTS = 10;
