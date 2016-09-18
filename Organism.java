@@ -16,6 +16,9 @@ public class Organism {
 	private static final Random rand = new Random();
 
 	public Organism(List<Operation> operations, double startValue) {
+		if (operations.isEmpty()) {
+			throw new IllegalArgumentException("operations cannot be empty");
+		}
 		this.operations = operations;
 		this.numOperations = operations.size();
 		double res = startValue;
