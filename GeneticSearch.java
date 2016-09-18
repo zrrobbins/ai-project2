@@ -18,7 +18,7 @@ import java.util.Random;
  */
 public class GeneticSearch extends Search {
 
-	final boolean DEBUG = false;
+	final boolean DEBUG = true;
 	final boolean STOP_WHEN_RESULT_FOUND = false;
 	final int INIT_POPULATION_SIZE = 10;
 	final int NUMBER_OF_PARENTS = 10;
@@ -297,32 +297,6 @@ public class GeneticSearch extends Search {
 				Integer.compare(a.numOperations, b.numOperations) : 
 				(aDiff < bDiff ? -1 : 1)
 			);
-		}
-	}
-
-
-	/* DEBUGGING METHODS */
-
-	public void testMutators(){
-		for (int i = 0; i < INIT_POPULATION_SIZE; i++) {
-			Organism organism = this.generateNewOrganism();
-			System.err.println(organism);
-			Organism mutated = organism.mutate(this.operations, this.startValue);
-			System.err.println(mutated);
-		}
-	}
-
-	private void testReproduce(Organism mother, Organism father) {
-		System.err.println("\nCROSSOVER/REPRODUCTION TEST:\nBefore swap:");
-		System.err.println(mother);
-		System.err.println(father);
-		List<Organism> swappedOrganisms = reproduce(new ParentPair(mother, father));
-		if (swappedOrganisms.size() > 0) {
-			System.err.println("\nAfter swap:");
-			System.err.println(swappedOrganisms.get(0));
-			System.err.println(swappedOrganisms.get(1));
-		} else {
-			System.err.println("No crossover");
 		}
 	}
 }
