@@ -12,20 +12,22 @@ import java.util.LinkedList;
 import java.util.List; 
 import java.util.PriorityQueue;
 import java.util.Random;
+import java.nio.*;
+import java.nio.file.*;
 
 /**
  * Implementation of Genetic search
  */
 public class GeneticSearch extends Search {
 
-	final boolean DEBUG = true;
+	final boolean DEBUG = false;
 	final boolean STOP_WHEN_RESULT_FOUND = false;
 	final int INIT_POPULATION_SIZE = 10;
 	final int NUMBER_OF_PARENTS = 10;
 	final double REPRODUCTION_RATE = 0.75;
 	final double MUTATION_RATE = 0.1;
 	final int MIN_INIT_ORGANISM_LENGTH = 1;
-	final int MAX_INIT_ORGANISM_LENGTH = 30;
+	final int MAX_INIT_ORGANISM_LENGTH = 300;
 	final int SIZE_REQUIRED_FOR_CULL = 1000;
 	final int AMOUNT_TO_CULL = 500;
 
@@ -273,11 +275,17 @@ public class GeneticSearch extends Search {
 			System.out.println(" = " + val);
 		}
 		System.out.println();
-		System.out.println("Error: " + Math.abs(result.resultValue - this.targetValue));
+		double error = Math.abs(result.resultValue - this.targetValue);
+		System.out.println("Error: " + error);
 		System.out.println("Size of organism: " + result.numOperations);
 		System.out.println("Search required: " + secsTaken + " seconds");
 		System.out.println("Population size: " + population.size());
 		System.out.println("Number of generations: " + numGenerations);
+		try {
+			Files.write(Paths.get("out_" + this.timeLimit + ".txt"), (error + "\n").getBytes(), StandardOpenOption.APPEND, StandardOpenOption.CREATE);
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	private static class OrganismComparator implements Comparator<Organism> {
